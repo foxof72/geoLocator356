@@ -9,8 +9,7 @@ theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # this function sends a greeting to central
 def greeting():
     global theSock
-    greet = """
-HEAD /specialHello HTTP2.0 OK
+    greet = """HEAD /specialHello HTTP2.0 OK\r
 
     """
     theSock.send(greet)
@@ -23,6 +22,7 @@ def clocker(incoming):
     timeResponse = "Passed time="+elaspedTime
     return timeResponse
 
+# runs in geolocate.py, do not change function name
 def run_pinger_server():
     global theSock
     address = ('serverAddress', 8072) # these are placeholder values, need to add the actual values for central

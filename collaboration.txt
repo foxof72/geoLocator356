@@ -1,0 +1,8 @@
+John Williams
+Collaboration Log
+
+PyMOTW
+3/12/17
+Used this to remind myself how to open a connection.
+https://pymotw.com/2/socket/tcp.html
+

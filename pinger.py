@@ -2,7 +2,6 @@
 
 from urlParser import *
 import socket
-import sys
 import time
 
 theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -31,8 +30,9 @@ def run_pinger_server():
     theSock.bind(address)
     theSock.listen(1)
     while True:
+        server, clientAddress = None
         try:
-            server , clientAddress = theSock.accept()
+            server, clientAddress = theSock.accept()
             while True:
                 try:
                     incomingURL = server.recv(4096)

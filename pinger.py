@@ -32,4 +32,3 @@ def run_pinger_server():
         requestList = lineList[2].split(' ')
         rtt = sendTime - requestList[2]
         connection.sendall(rtt)
-    

@@ -19,17 +19,16 @@ def connectToTarget(path, url, port):
     Date: """ + time.time() + """
     """ # TODO: verify this request is formatted properly
     connection.sendall(http)
-    while True: # TODO: check loop condition
-        incoming = connection.recv(4096)
-        # where incoming is HTTP request from targeted server
+    incoming = connection.recv(4096)
+    # where incoming is HTTP request from targeted server
     return incoming
 
 def parser(request):
     print "request:", request
-    lineList = []
-    requestList = []
-    timeList = []
-    hostList = []
+    # lineList = []
+    # requestList = []
+    # timeList = []
+    # hostList = []
     lineList = request.splitlines()
     print "line: ", lineList[1]
     requestList = lineList[1].split(' ')

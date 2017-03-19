@@ -4,48 +4,32 @@ from urlParser import *
 import socket
 import time
 
-theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# this function sends a greeting to central
-def greeting():
-    global theSock
-    greet = """HEAD /specialHello HTTP2.0 OK\r
-
-    """
-    theSock.send(greet)
-
 # this function determines the RTT of the target
-def clocker(incoming):
-    urlTime = parser(incoming)
-    currentTime = time.time()
-    elaspedTime = currentTime-urlTime[1]
-    timeResponse = "Passed time="+elaspedTime
-    return timeResponse
+# def clocker(incoming):
+#     urlTime = parser(incoming)
+#     currentTime = time.time()
+#     elaspedTime = currentTime-urlTime[1]
+#     timeResponse = "Passed time="+elaspedTime
+#     return timeResponse
 
 # runs in geolocate.py, do not change function name
 def run_pinger_server():
-    global theSock
+    theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     address = ('serverAddress', 8072) # these are placeholder values, need to add the actual values for central
     print "pinger server connecting to ", address
-    theSock.bind(address)
-    theSock.listen(1)
-    while True:
-        server, clientAddress = None
-        try:
-            server, clientAddress = theSock.accept()
-            while True:
-                try:
-                    incomingURL = server.recv(4096)
-                    greeting()
-                    rtt = clocker(incomingURL)
-                    server.sendall(rtt) # this might need to get moved
-                except Exception as inner:
-                    print "Error occurred, escaping inner while.  Error: " + inner
-                    server.close()
-                    break
-        except Exception as outer:
-            print "Error occurred, escaping while.  Error: " + outer
-            if server is not None:
-                server.close()
-            break
-    print "connection exited"
+    theSock.bind(address) # TODO: i believe i need this?
+    # theSock.listen(1) # TODO: i believe i dont need to listen
+    # removed looping as per walsh's recommendation
+    connection = theSock.connect(address)
+    connection.sendall("PING")
+    while connection is not None: # TODO: check this condition
+        incoming = connection.recv(4096)
+        targetValues = parser(incoming)
+        sendTime = time.time()
+        outbound = connectToTarget(targetValues[1], targetValues[2], targetValues[3])
+        lineList = outbound.splitlines()
+        print "line: ", lineList[2]
+        requestList = lineList[2].split(' ')
+        rtt = sendTime - requestList[2]
+        connection.sendall(rtt)
+    

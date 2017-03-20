@@ -49,7 +49,8 @@ def parser(request):
         path = ""
     if path != "":
         path = '/' + path
-    return host, path, port
+    result = host + path + port
+    return result
 
 
 def main():

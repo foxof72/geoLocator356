@@ -62,8 +62,11 @@ def handle_geolocate(name): #return the url and port number for the request
     #add pingers to list
     #error check to make sure pingers live
     ping_info = urlParser.parser(name)
-    for(i=0, i++, i<=sizeof(ping_list):
 
+    count = 0
+    while count < sizeof(ping_list):
+        #TODO ask walsh about multiple sockets and sending to pinger
+        count + 1
 
     return()
 
@@ -105,6 +108,8 @@ def handle_request(url):
         return handle_hello_name_request(name)
     elif url.startswith("/geolocate"):
         return handle_geolocate(url)
+    elif url.startswith("PING"):
+        return handle_ping
     elif url.startswith("/"):
         path = server_root + '/' + url[1:]
         return handle_file_request(path)

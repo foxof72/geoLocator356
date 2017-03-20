@@ -54,6 +54,13 @@ def handle_hello_name_request(name):
             "text/plain",
             "Why, hello %s! How are you doing today?\n" % (name))
 
+def handle_goelocate(name): #return the url and port number for the request
+    print "Handling geolocation"
+    #parse url, send to pinger
+    #add pingers to list
+    #error check to make sure pingers live
+    return ()
+
 
 # handle_file_request returns a status code, mime-type, and the body of a file
 # for the given path, or an appropriate message if an error was encountered.
@@ -85,6 +92,8 @@ def handle_request(url):
     elif url.startswith("/hello?"):
         name = url[7:]
         return handle_hello_name_request(name)
+    elif url == "/geolocate":
+        return handle_geolocate(url)
     elif url.startswith("/"):
         path = server_root + '/' + url[1:]
         return handle_file_request(path)

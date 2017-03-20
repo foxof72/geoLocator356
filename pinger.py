@@ -20,9 +20,10 @@ def run_pinger_server():
     theSock.bind(address) # TODO: i believe i need this?
     # theSock.listen(1) # TODO: i believe i dont need to listen
     # removed looping as per walsh's recommendation
+    #check loop for connections, try connection, if fail sleep and try again
     connection = theSock.connect(address)
     connection.sendall("PING")
-    while connection is not None: # TODO: check this condition
+    while True: # TODO: check this condition
         incoming = connection.recv(4096)
         targetValues = parser(incoming)
         sendTime = time.time()

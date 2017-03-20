@@ -17,11 +17,8 @@ def run_pinger_server():
     connection = theSock.connect(address)
     # TODO: add a loop to try several times to connect in event of failure
     connection.sendall("PING")
-<<<<<<< HEAD
+    # resolved merge conflict here
     while True: # TODO: check this condition
-=======
-    while True:
->>>>>>> 0f107723f332619a9ce83b7d77ae4581d451796e
         incoming = connection.recv(4096)
         targetValues = parser(incoming)
         sendTime = time.time()

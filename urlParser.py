@@ -4,6 +4,7 @@
 import socket
 import urllib
 import time
+
 # global startTime
 
 
@@ -26,26 +27,34 @@ def connectToTarget(path, host, port):
 
 def parser(request):
     print "request:", request
-    # lineList = []
-    # requestList = []
-    # timeList = []
-    # hostList = []
     lineList = request.splitlines()
     print "line: ", lineList[1]
     requestList = lineList[1].split(' ')
     decoded = urllib.unquote(requestList[1])
     print "decoded", decoded
-    path, target = decoded.split('?')
+    order, target = decoded.split('?')
     trash, host = target.split('=')
+    print "host: ", host
     trash, urlWithPort = host.split('://')
     print "host with port: ", urlWithPort
-    url, port = urlWithPort.split(':')
-    return path, url, port
+    try:
+        host, port = urlWithPort.split(':')
+    except Exception as e:
+        host = urlWithPort
+        port = 80
+    try:
+        host, path = host.split('/', 1)
+    except Exception as e:
+        host = urlWithPort
+        path = ""
+    if path != "":
+        path = '/' + path
+    return order, host, path, port
 
 
 def main():
     testValue = """
-GET /geolocate?target=https%3A%2F%2Fwww.mountainproject.com/fourms/southerncalifornia:8072 HTTP2.0 OK'
+GET /geolocate?target=https%3A%2F%2Fwww.mountainproject.com HTTP2.0 OK'
 sentAt: """ + str(time.time()) + """
 Server: test
 isRealRequest = false

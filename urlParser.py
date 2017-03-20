@@ -4,24 +4,25 @@
 import socket
 import urllib
 import time
-global startTime
+# global startTime
 
 
 # this function connects to the url that is being targeted
-def connectToTarget(path, url, port):
+def connectToTarget(path, host, port):
     theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    address = (url, port)
+    address = (host, port)
     print "connecting to target", address
-    theSock.bind(address) # TODO: believe i need to bind
-    # TODO: theSock.listen(1) don't believe i need to listen
     connection = theSock.connect(address)
-    http = """GET """ + path + url + path + """ HTTP1.0 OK\n\r
+    http = """GET """ + path + host + port + """ HTTP1.0 OK\r\n
     Date: """ + time.time() + """
-    """ # TODO: verify this request is formatted properly
+    """ # TODO: verify this request is formatted properly, hint its not
+    startTime = time.time()
     connection.sendall(http)
     incoming = connection.recv(4096)
+    endTime = time.time()
     # where incoming is HTTP request from targeted server
-    return incoming
+    rtt = endTime-startTime
+    return rtt
 
 def parser(request):
     print "request:", request

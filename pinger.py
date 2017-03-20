@@ -4,16 +4,9 @@ from urlParser import *
 import socket
 import time
 
-# this function determines the RTT of the target
-# def clocker(incoming):
-#     urlTime = parser(incoming)
-#     currentTime = time.time()
-#     elaspedTime = currentTime-urlTime[1]
-#     timeResponse = "Passed time="+elaspedTime
-#     return timeResponse
-
 # runs in geolocate.py, do not change function name
 def run_pinger_server():
+    # TODO: add error check for a bogus url
     theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     address = ('serverAddress', 8072) # these are placeholder values, need to add the actual values for central
     print "pinger server connecting to ", address

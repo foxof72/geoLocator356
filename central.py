@@ -9,6 +9,7 @@ import socket  # for socket stuff
 import sys  # for sys.argv
 import urllib  # for urllib.unquote()()
 import time  # for time.time()
+import urlParser
 
 # Global "configuration" variables, with default values
 server_host = ""  # emptystring means "use any available network inerface"
@@ -22,7 +23,7 @@ num_errors = 0
 tot_time = 0  # total time spent handling requests
 avg_time = 0  # average time spent handling requests
 max_time = 0  # max time spent handling a request
-
+ping_list = []
 
 # handle_status_request returns a status code, mime-type, and message
 # appropriate for the special "/status" url.
@@ -54,12 +55,22 @@ def handle_hello_name_request(name):
             "text/plain",
             "Why, hello %s! How are you doing today?\n" % (name))
 
-def handle_goelocate(name): #return the url and port number for the request
+def handle_geolocate(name): #return the url and port number for the request
+    global ping_list
     print "Handling geolocation"
     #parse url, send to pinger
     #add pingers to list
     #error check to make sure pingers live
-    return ()
+    ping_info = urlParser.parser(name)
+    for(i=0, i++, i<=sizeof(ping_list):
+
+
+    return()
+
+def handle_ping(name):
+    global ping_list
+    pinger_name = name[5:]
+    ping_list.append(pinger_name)
 
 
 # handle_file_request returns a status code, mime-type, and the body of a file
@@ -92,7 +103,7 @@ def handle_request(url):
     elif url.startswith("/hello?"):
         name = url[7:]
         return handle_hello_name_request(name)
-    elif url == "/geolocate":
+    elif url.startswith("/geolocate"):
         return handle_geolocate(url)
     elif url.startswith("/"):
         path = server_root + '/' + url[1:]

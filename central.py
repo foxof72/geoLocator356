@@ -135,7 +135,7 @@ def handle_http_connection(c):
     c.sendall(body)
 
 
-def run_central_cooridnator():
+def run_central_coordinator():
 
     # Print a welcome message
     server_addr = (server_host, server_port)

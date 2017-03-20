@@ -1,8 +1,10 @@
 # ping servers
 
+import thread
 from urlParser import *
+from aws import *
+from gcp import *
 import socket
-import time
 
 # runs in geolocate.py, do not change function name
 def run_pinger_server():
@@ -10,22 +12,20 @@ def run_pinger_server():
     theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     address = ('serverAddress', 8072) # these are placeholder values, need to add the actual values for central
     print "pinger server connecting to ", address
-    # theSock.bind(address) # TODO: i believe i need this?
-    # theSock.listen(1) # TODO: i believe i dont need to listen
     # removed looping as per walsh's recommendation
-    #check loop for connections, try connection, if fail sleep and try again
-    connection = theSock.connect(address)
-    # TODO: add a loop to try several times to connect in event of failure
-    connection.sendall("PING")
-    # resolved merge conflict here
-    while True: # TODO: check this condition
+    # check loop for connections, try connection, if fail sleep and try again
+    for i in range(0, 3):
+        try:
+            connection = None
+            connection = theSock.connect(address)
+            if connection is not None: # this means connection has been established
+                break
+        except Exception as e:
+            print "connection failed. Retrying " + 3 - i + " times. Error: " + str(e)
+            thread.sleep(5000) # in event of failure, sleep for 5 seconds
+    connection.sendall("PING=" + get_my_external_ip())
+    while True:
         incoming = connection.recv(4096)
-        targetValues = parser(incoming)
-        sendTime = time.time()
-        outbound = connectToTarget(targetValues[1], targetValues[2], targetValues[3])
-        # TODO: fix this, rtt not found here
-        lineList = outbound.splitlines()
-        print "line: ", lineList[2]
-        requestList = lineList[2].split(' ')
-        rtt = sendTime - requestList[2]
-        connection.sendall(rtt)
+        print "received from central: " + incoming
+        outbound = connectToTarget(incoming)
+        connection.sendall("RESULT=" + outbound)

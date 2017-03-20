@@ -10,3 +10,9 @@ Wikipedia
 3/19/17
 Read about headers.
 https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+
+Python documentation
+3/20/17
+Read about split
+https://docs.python.org/2/library/stdtypes.html
+

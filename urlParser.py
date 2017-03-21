@@ -10,6 +10,7 @@ import time
 
 # this function connects to the url that is being targeted
 def connectToTarget(path, host, port):
+    # TODO: put this whole function in a try except loop, loop this several times
     theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     address = (host, port)
     print "connecting to target", address
@@ -46,7 +47,7 @@ def parser(request):
         host, path = host.split('/', 1)
     except Exception as e:
         host = urlWithPort
-        path = ""
+        path = "/"
     if path != "":
         path = '/' + path
     result = host + path + port

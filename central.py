@@ -1,4 +1,4 @@
-# Uses Prof. Walsh's code, modified by John Williams
+# Uses Prof. Walsh's code, modified by Anthony Green and John Williams
 # Author: K. Walsh <kwalsh@cs.holycross.edu>
 # Date: 15 January 2015
 #
@@ -24,6 +24,7 @@ tot_time = 0  # total time spent handling requests
 avg_time = 0  # average time spent handling requests
 max_time = 0  # max time spent handling a request
 ping_list = []
+pinger_bool = false
 
 # handle_status_request returns a status code, mime-type, and message
 # appropriate for the special "/status" url.
@@ -66,14 +67,18 @@ def handle_geolocate(name): #return the url and port number for the request
     count = 0
     while count < sizeof(ping_list):
         #TODO ask walsh about multiple sockets and sending to pinger
+        p = ping_list[count]
+        p.sendall(ping_info)
         count + 1
 
-    return()
-
-def handle_ping(name):
-    global ping_list
-    pinger_name = name[5:]
-    ping_list.append(pinger_name)
+    count = 0
+    result = []
+    while count < sizeof(ping_list):
+        p = ping_list[count]
+        result[i] = p.recv(4096)
+        count + 1
+        ','.join(result)
+    return(result)
 
 
 # handle_file_request returns a status code, mime-type, and the body of a file
@@ -108,8 +113,6 @@ def handle_request(url):
         return handle_hello_name_request(name)
     elif url.startswith("/geolocate"):
         return handle_geolocate(url)
-    elif url.startswith("PING"):
-        return handle_ping
     elif url.startswith("/"):
         path = server_root + '/' + url[1:]
         return handle_file_request(path)
@@ -139,14 +142,17 @@ def get_mime_type(path):
 # handle_http_connection reads an HTTP request from socket c, parses and handles
 # the request, then sends the response back to socket c.
 def handle_http_connection(c):
-    global num_errors, num_requests
+    global ping_list, pinger_bool
     data = c.recv(4096)
     if not data:
         print "Empty request"
-        num_errors = num_errors + 1
         return
-    num_requests = num_requests + 1
+
     headers, body = data.split("\r\n\r\n", 1)
+    if 'PING' in headers: #if this is a ping request, store the socket in the list and set the bool to true
+        ping_list.append(c)
+        pinger_bool = True
+        return
     first_line, headers = headers.split("\r\n", 1)
     print "Request is:", first_line
     method, url, version = first_line.split()
@@ -161,6 +167,9 @@ def handle_http_connection(c):
 
 
 def run_central_coordinator():
+
+    global pinger_bool
+
 
     # Print a welcome message
     server_addr = (server_host, server_port)
@@ -177,13 +186,15 @@ def run_central_coordinator():
     try:
         # Repeatedly accept and handle connections
         while True:
+            pinger_bool = False
             c, client_addr = s.accept()
             print "Handling connection ", num_requests, "from", client_addr
             start = time.time()
             num_connections = num_connections + 1;
             handle_http_connection(c)
             end = time.time()
-            c.close()
+            if not pinger_bool:
+                c.close()
             print "Done with connection ", num_requests, "from", client_addr
             # Update status/performance counters
             duration = end - start
@@ -192,6 +203,6 @@ def run_central_coordinator():
             if duration > max_time:
                 max_time = duration
     finally:
-        print 'Server is shutting down'
+
         # Clean up
         s.close()

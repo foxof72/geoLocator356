@@ -77,7 +77,8 @@ def handle_geolocate(name): #return the url and port number for the request
         p = ping_list[count]
         result[i] = p.recv(4096)
         count + 1
-        ','.join(result)
+
+    ','.join(result)
     return(result)
 
 

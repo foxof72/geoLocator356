@@ -175,7 +175,8 @@ def run_central_coordinator(my_ipaddr, my_zone, my_region, central_host, central
 
 
     # Print a welcome message
-    server_addr = (central_host, central_port)
+    server_addr = (central_host, int(central_port))
+    print "change made "
     print "Starting web server"
     print "Listening on address", server_addr
     print "Serving files from", server_root

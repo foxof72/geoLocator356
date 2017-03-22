@@ -50,7 +50,7 @@ def parser(request):
         path = "/"
     if path != "":
         path = '/' + path
-    result = host + path + port
+    result = host + path + str(port)
     return result
 
 

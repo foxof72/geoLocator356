@@ -9,6 +9,8 @@ import socket  # for socket stuff
 import sys  # for sys.argv
 import urllib  # for urllib.unquote()()
 import time  # for time.time()
+from _ctypes import sizeof
+
 import urlParser
 
 # Global "configuration" variables, with default values
@@ -24,7 +26,7 @@ tot_time = 0  # total time spent handling requests
 avg_time = 0  # average time spent handling requests
 max_time = 0  # max time spent handling a request
 ping_list = []
-pinger_bool = false
+pinger_bool = False
 
 # handle_status_request returns a status code, mime-type, and message
 # appropriate for the special "/status" url.
@@ -75,7 +77,7 @@ def handle_geolocate(name): #return the url and port number for the request
     result = []
     while count < sizeof(ping_list):
         p = ping_list[count]
-        result[i] = p.recv(4096)
+        result[count] = p.recv(4096)
         count + 1
 
     ','.join(result)

@@ -10,7 +10,7 @@ import socket
 def run_pinger_server(my_dns_name, my_region, central_host, central_port):
     # TODO: add error check for a bogus url
     theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    address = ('serverAddress', 8072) # these are placeholder values, need to add the actual values for central
+    address = (central_host, central_port) # these are placeholder values, need to add the actual values for central
     print "pinger server connecting to ", address
     # removed looping as per walsh's recommendation
     # check loop for connections, try connection, if fail sleep and try again
@@ -23,7 +23,7 @@ def run_pinger_server(my_dns_name, my_region, central_host, central_port):
         except Exception as e:
             print "connection failed. Retrying " + 3 - i + " times. Error: " + str(e)
             time.sleep(5) # in event of failure, sleep for 5 seconds
-    connection.sendall("PING=" + get_my_external_ip())
+    connection.sendall("PING=" + my_dns_name)
     while True:
         incoming = connection.recv(4096)
         print "received from central: " + incoming

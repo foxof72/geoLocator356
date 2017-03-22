@@ -9,21 +9,24 @@ import time
 
 
 # this function connects to the url that is being targeted
-def connectToTarget(path, host, port):
+def connectToTarget(host):
     # TODO: put this whole function in a try except loop, loop this several times
     theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    address = (host, port)
+    print "host: " + host
+    path, host, port = host.split(':=')
+    address = (host, int(port))
     print "connecting to target", address
-    connection = theSock.connect(address)
-    http = """GET """ + path + host + port + """ HTTP1.0 OK\r\n
-    Date: """ + time.time() + """
+    theSock.connect(address)
+    http = """GET """ + path + """ HTTP/1.0\r\n
+
     """ # TODO: verify this request is formatted properly, hint its not
     startTime = time.time()
-    connection.sendall(http)
-    incoming = connection.recv(4096)
+    theSock.sendall(http)
+    incoming = theSock.recv(4096)
     endTime = time.time()
     # where incoming is HTTP request from targeted server
     rtt = endTime-startTime
+    print "rtt: " + str(rtt)
     return rtt
 
 def parser(request):
@@ -50,8 +53,7 @@ def parser(request):
         path = "/"
     if path != "":
         path = '/' + path
-    result = host + path + str(port)
-    return result
+    return path, host, port
 
 
 def main():

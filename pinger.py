@@ -14,18 +14,17 @@ def run_pinger_server(my_dns_name, my_region, central_host, central_port):
     print "pinger server connecting to ", address
     # removed looping as per walsh's recommendation
     # check loop for connections, try connection, if fail sleep and try again
-    connection = None
     for i in range(0, 3):
         try:
-            connection = theSock.connect(address)
-            if connection is not None: # this means connection has been established
-                break
+            theSock.connect(address)
+            break
         except Exception as e:
             print "connection failed. Retrying " + str(3 - i) + " times. Error: " + str(e)
             time.sleep(5) # in event of failure, sleep for 5 seconds
-    connection.sendall("PING=" + my_dns_name)
+    theSock.sendall("PING=" + my_dns_name + "\r\n\r\n")
+    print "connected to ", address
     while True:
-        incoming = connection.recv(4096)
+        incoming = theSock.recv(4096)
         print "received from central: " + incoming
         outbound = connectToTarget(incoming)
-        connection.sendall("RESULT=" + outbound)
+        theSock.sendall("RESULT=" + str(outbound))

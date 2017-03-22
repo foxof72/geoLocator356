@@ -20,13 +20,16 @@ from fabric.operations import put
 env.hosts = [
         '104.199.244.68', # gcp, Mordor
         '35.187.207.40', # gcp, serenity
+        '104.199.47.244', # gcp, Tatoonie
         ]
-env.key_filename = '~/cloud_sshkey'
+env.user = 'jmwill18'
+env.key_filename = '~/.ssh/cloud_sshkey'
 
 # The deploy task copies all python files from local directory to every EC2 host.
 def deploy():
     put('*.py', '~/')
+    put('form.html', '~/')
 
 # The start task runs the geolocate.py command on every EC2 host.
 def start():
-    run('python geolocate.py 35.187.38.60 8088')
+    run('python geolocate.py 104.199.47.244 8088')

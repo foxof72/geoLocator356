@@ -64,25 +64,26 @@ def handle_geolocate(name): #return the url and port number for the request
     #parse url, send to pinger
     #add pingers to list
     #error check to make sure pingers live
-    ping_info = urlParser.parser(name)
+    path, host, port = urlParser.parser(name)
+
+    mime_type = get_mime_type(name)
 
     count = 0
     while count < len(ping_list):
         #TODO ask walsh about multiple sockets and sending to pinger
         p = ping_list[count]
-        p.sendall(ping_info)
-        count + 1
+        p.sendall(path+':='+host+':='+str(port))
+        count = count + 1
 
     count = 0
     result = []
     while count < len(ping_list):
         p = ping_list[count]
-        result[count] = p.recv(4096)
-        count + 1
-        p.close()
+        result.append(p.recv(4096))
+        count = count + 1
 
     ','.join(result)
-    return(result)
+    return("200 Ok", mime_type, result)
 
 
 # handle_file_request returns a status code, mime-type, and the body of a file
@@ -108,14 +109,7 @@ def handle_file_request(path):
 def handle_request(url):
     global num_errors
     url = urllib.unquote(url)
-    if url == "/status":
-        return handle_status_request()
-    elif url == "/hello":
-        return handle_hello_request()
-    elif url.startswith("/hello?"):
-        name = url[7:]
-        return handle_hello_name_request(name)
-    elif url.startswith("/geolocate"):
+    if url.startswith("/geolocate"):
         return handle_geolocate(url)
     elif url.startswith("/"):
         path = server_root # removed + '/' + url[1:]
@@ -151,25 +145,27 @@ def handle_http_connection(c):
     print "data: " + data
     if not data:
         print "Empty request"
-        return
+        return # return what
 
     headers, body = data.split("\r\n\r\n", 1)
     if 'PING' in headers: #if this is a ping request, store the socket in the list and set the bool to true
         ping_list.append(c)
         pinger_bool = True
-        return
-    handle_request(data)
+        return # return what
     first_line, headers = headers.split("\r\n", 1)
     print "Request is:", first_line
     method, url, version = first_line.split()
+    code, mime_type, rttList = handle_request(url)
+    strRttList = ' '.join(rttList)
+    print "body: " + strRttList
+    print "method, url, verision: " + method + ' ' + url + ' ' + version
     print "Method is", method, "url is", url, "version is", version
-    code, mime_type, body = handle_request(url)
     c.sendall("HTTP/1.0 " + code + "\r\n")
     c.sendall("Server: central\r\n")
     c.sendall("Content-type: " + mime_type + "\r\n")
-    c.sendall("Content-Length: " + str(len(body)) + "\r\n")
+    c.sendall("Content-Length: " + str(len(strRttList)) + "\r\n")
     c.sendall("\r\n")
-    c.sendall(body)
+    c.sendall(strRttList)
 
 
 def run_central_coordinator(my_ipaddr, my_zone, my_region, central_host, central_port):
@@ -201,7 +197,7 @@ def run_central_coordinator(my_ipaddr, my_zone, my_region, central_host, central
             end = time.time()
             if not pinger_bool:
                 c.close()
-            print "Done with connection ", num_requests, "from", client_addr
+                print "Done with connection ", num_requests, "from", client_addr
             # Update status/performance counters
     finally:
 

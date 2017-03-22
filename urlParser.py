@@ -29,9 +29,9 @@ def connectToTarget(path, host, port):
 def parser(request):
     print "request:", request
     lineList = request.splitlines()
-    print "line: ", lineList[1]
-    requestList = lineList[1].split(' ')
-    decoded = urllib.unquote(requestList[1])
+    print "line: ", lineList[0]
+    requestList = lineList[0].split(' ')
+    decoded = urllib.unquote(requestList[0])
     print "decoded", decoded
     order, target = decoded.split('?')
     trash, host = target.split('=')

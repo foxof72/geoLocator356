@@ -16,7 +16,7 @@ import urlParser
 # Global "configuration" variables, with default values
 server_host = ""  # emptystring means "use any available network inerface"
 server_port = 8888
-server_root = "./web_files"
+server_root = "form.html"
 
 # Global "status/performance" counter variables
 num_connections = 0
@@ -67,7 +67,7 @@ def handle_geolocate(name): #return the url and port number for the request
     ping_info = urlParser.parser(name)
 
     count = 0
-    while count < sizeof(ping_list):
+    while count < len(ping_list):
         #TODO ask walsh about multiple sockets and sending to pinger
         p = ping_list[count]
         p.sendall(ping_info)
@@ -75,10 +75,11 @@ def handle_geolocate(name): #return the url and port number for the request
 
     count = 0
     result = []
-    while count < sizeof(ping_list):
+    while count < len(ping_list):
         p = ping_list[count]
         result[count] = p.recv(4096)
         count + 1
+        p.close()
 
     ','.join(result)
     return(result)
@@ -117,7 +118,7 @@ def handle_request(url):
     elif url.startswith("/geolocate"):
         return handle_geolocate(url)
     elif url.startswith("/"):
-        path = server_root + '/' + url[1:]
+        path = server_root # removed + '/' + url[1:]
         return handle_file_request(path)
     else:
         print "Unrecognized url prefix"
@@ -147,6 +148,7 @@ def get_mime_type(path):
 def handle_http_connection(c):
     global ping_list, pinger_bool
     data = c.recv(4096)
+    print "data: " + data
     if not data:
         print "Empty request"
         return
@@ -156,6 +158,7 @@ def handle_http_connection(c):
         ping_list.append(c)
         pinger_bool = True
         return
+    handle_request(data)
     first_line, headers = headers.split("\r\n", 1)
     print "Request is:", first_line
     method, url, version = first_line.split()
@@ -175,8 +178,7 @@ def run_central_coordinator(my_ipaddr, my_zone, my_region, central_host, central
 
 
     # Print a welcome message
-    server_addr = (central_host, int(central_port))
-    print "change made "
+    server_addr = ('', int(central_port))
     print "Starting web server"
     print "Listening on address", server_addr
     print "Serving files from", server_root
@@ -194,18 +196,13 @@ def run_central_coordinator(my_ipaddr, my_zone, my_region, central_host, central
             c, client_addr = s.accept()
             print "Handling connection ", num_requests, "from", client_addr
             start = time.time()
-            num_connections = num_connections + 1;
+            # num_connections = num_connections + 1;
             handle_http_connection(c)
             end = time.time()
             if not pinger_bool:
                 c.close()
             print "Done with connection ", num_requests, "from", client_addr
             # Update status/performance counters
-            duration = end - start
-            tot_time = tot_time + (end - start)
-            avg_time = tot_time / num_requests
-            if duration > max_time:
-                max_time = duration
     finally:
 
         # Clean up

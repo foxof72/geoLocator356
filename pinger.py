@@ -21,7 +21,7 @@ def run_pinger_server(my_dns_name, my_region, central_host, central_port):
             if connection is not None: # this means connection has been established
                 break
         except Exception as e:
-            print "connection failed. Retrying " + 3 - i + " times. Error: " + str(e)
+            print "connection failed. Retrying " + str(3 - i) + " times. Error: " + str(e)
             time.sleep(5) # in event of failure, sleep for 5 seconds
     connection.sendall("PING=" + my_dns_name)
     while True:

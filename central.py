@@ -169,13 +169,13 @@ def handle_http_connection(c):
     c.sendall(body)
 
 
-def run_central_coordinator():
+def run_central_coordinator(my_ipaddr, my_zone, my_region, central_host, central_port):
 
     global pinger_bool
 
 
     # Print a welcome message
-    server_addr = (server_host, server_port)
+    server_addr = (central_host, central_port)
     print "Starting web server"
     print "Listening on address", server_addr
     print "Serving files from", server_root

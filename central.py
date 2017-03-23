@@ -80,8 +80,8 @@ def handle_geolocate(name): #return the url and port number for the request
             ping_list.pop(count)
 
 
-        count = 0
-        result = []
+    count = 0
+    result = []
     while count < len(ping_list):
         p = ping_list[count]
         result.append(p.recv(4096))

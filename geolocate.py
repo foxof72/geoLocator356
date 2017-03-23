@@ -16,7 +16,7 @@
 # where <CentralIP> is the IP address (or the DNS host name) of the host that
 # will be the central coordinator, and <Port> is the port on which the central
 # coordinator will serve HTTP requests from users.
-# Recent as of 5:33PM, on 3/23/17
+# Recent as of 7:16PM, on 3/23/17
 
 import sys            # for sys.argv
 import aws            # for aws.region_for_zone

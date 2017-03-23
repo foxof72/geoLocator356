@@ -12,7 +12,6 @@ import time
 def connectToTarget(host):
     # TODO: put this whole function in a try except loop, loop this several times
     theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print "host: " + host
     path, host, port = host.split(':=')
     address = (host, int(port))
     print "connecting to target", address

@@ -24,7 +24,7 @@ def run_pinger_server(my_dns_name, my_region, central_host, central_port):
                 print "connection failed. Retrying " + str(3 - i) + " times. Error: " + str(e)
                 time.sleep(5)  # in event of failure, sleep for 5 seconds
         theSock.sendall("PING=" + my_dns_name + "\r\n\r\n")
-        print "connected to ", address
+        print "pinger server connected to ", address
         while True:
             incoming = theSock.recv(4096)
             print "received from central: " + incoming

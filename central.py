@@ -22,20 +22,16 @@ pinger_bool = False
 def handle_geolocate(name): #return the url and port number for the request
     global ping_list
     print "Handling geolocation"
-    #parse url, send to pinger
-    #add pingers to list
-    #error check to make sure pingers live
     path, host, port = urlParser.parser(name)
 
     mime_type = get_mime_type(name)
 
     count = 0
     while count < len(ping_list):
-            #TODO ask walsh about multiple sockets and sending to pinger
         try:
             p = ping_list[count]
             p.sendall(path+':='+host+':='+str(port))
-            count = count + 1
+            count += 1
         except:
             ping_list.pop(count)
     count = 0
@@ -44,7 +40,7 @@ def handle_geolocate(name): #return the url and port number for the request
         p = ping_list[count]
         result.append(p.recv(4096))
         count += 1
-    return("200 Ok", mime_type, result)
+    return "200 Ok", mime_type, result
 
 
 # handle_file_request returns a status code, mime-type, and the body of a file
@@ -69,7 +65,7 @@ def handle_request(url):
     if url.startswith("/geolocate"):
         return handle_geolocate(url)
     elif url.startswith("/"):
-        path = server_root # removed + '/' + url[1:]
+        path = server_root
         return handle_file_request(path)
     else:
         print "Unrecognized url prefix"
@@ -94,7 +90,7 @@ def get_mime_type(path):
 
 # this finds the fastest rtt time
 def fastest(rttList):
-    fast = 100000000000000000000000.0 # impossibly large number as default value
+    fast = 100000000000000000000000.0  # impossibly large number as default value
     i = 0
     while i < len(rttList):
         valueList = rttList[i].split('=')
@@ -110,29 +106,29 @@ def handle_http_connection(c):
     data = c.recv(4096)
     if not data:
         print "Empty request"
-        return # return what
+        return
 
     headers, body = data.split("\r\n\r\n", 1)
-    if 'PING' in headers: #if this is a ping request, store the socket in the list and set the bool to true
+    if 'PING' in headers:  # if this is a ping request, store the socket in the list and set the bool to true
         ping_list.append(c)
         pinger_bool = True
-        return # return what
+        return
     first_line, headers = headers.split("\r\n", 1)
     method, url, version = first_line.split()
     code, mime_type, rttList = handle_request(url)
     if (rttList[1].startswith("RESULT") or rttList[1].startswith('')) and "</html>" not in rttList:
         i = 0
-        fancyList = [] # max number of pings is 50
+        fancyList = []  # max number of pings is 50
         fastestValue = fastest(rttList)
-        while i < len(rttList): # for every recieved result
+        while i < len(rttList):  # for every received result
             if rttList[i] != '':
-                cosList = rttList[i].split('=') # list of value to be used for cosmetic purposes
+                cosList = rttList[i].split('=')  # list of value to be used for cosmetic purposes
                 if "Errno" not in cosList[2]:
                     # this makes a nice sentence of results
                     fancy = "Name: " + cosList[1] + ".  Result: " + cosList[2] + "ms.  " + "Region: " + cosList[3]
                 elif "Errno" in cosList[2]:
                     fancy = "Warning: Error-Name: " + cosList[1] + ".  Error: " + cosList[2] + "  " + "Region: " + cosList[3]
-                fancyList.append(str(fancy)) # adds string containing fancy result into list of result to be displayed
+                fancyList.append(str(fancy))  # adds string containing fancy result into list of result to be displayed
             i += 1
         fancyList.append("Fastest RTT: " + str(fastestValue))
         strRttList = '<br>'.join(fancyList)
@@ -152,7 +148,7 @@ def run_central_coordinator(my_ipaddr, my_zone, my_region, central_host, central
 
 
     # Print a welcome message
-    server_addr = ('', int(central_port))
+    server_addr = ('', int(central_port)) # due to an odd error, port must be left as ''
     print "Starting web server"
     print "Listening on address", server_addr
     print "Serving files from", server_root

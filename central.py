@@ -34,7 +34,7 @@ def handle_status_request():
     print "Handling status request"
     return ("200 OK",
             "text/plain",
-            "Web server by kwalsh, modified by John Williams\n" +
+            "Web server by kwalsh, modified by John Williams and Anthony Green\n" +
             "\n" +
             str(num_connections) + " connections handled (including this one)\n" +
             str(num_requests) + " requests handled (including this one)\n" +

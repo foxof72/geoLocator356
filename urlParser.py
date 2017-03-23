@@ -26,24 +26,18 @@ def connectToTarget(host):
     endTime = time.time()
     # where incoming is HTTP request from targeted server
     rtt = endTime-startTime
-    print "rtt: " + str(rtt)
-    return rtt
+    return str(rtt)
 
 def parser(request):
-    print "request:", request
     lineList = request.splitlines()
-    print "line: ", lineList[0]
     requestList = lineList[0].split(' ')
     decoded = urllib.unquote(requestList[0])
-    print "decoded", decoded
     order, target = decoded.split('?')
     trash, host = target.split('=')
-    print "host: ", host
     if '://' in host:
         trash, urlWithPort = host.split('://')
     else:
         urlWithPort = host
-    print "host with port: ", urlWithPort
     try:
         host, port = urlWithPort.split(':')
     except Exception as e:
@@ -61,13 +55,7 @@ def parser(request):
 
 def main():
     testValue = """
-GET /geolocate?target=https%3A%2F%2Fwww.mountainproject.com HTTP2.0 OK'
-sentAt: """ + str(time.time()) + """
-Server: test
-isRealRequest = false
-Content-Length: 8 bytes
-Date: now
-
+GET /geolocate?target=https%3A%2F%2Fwww.mountainproject.com HTTP/1.0'
 """
     result = parser(testValue)
     print "Returns: ", result

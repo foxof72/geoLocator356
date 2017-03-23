@@ -140,15 +140,17 @@ def get_mime_type(path):
 
 # this finds the fastest rtt time
 def fastest(rttList):
-    fast = 100000000000000000000000 # impossibly large number as default value
+    fast = 100000000000000000000000.0 # impossibly large number as default value
     i = 0
-    print "i: " + str(i)
+    # print "i: " + str(i)
     while i < len(rttList):
         valueList = rttList[i].split('=')
         print "rttValue: " + str(valueList[2])
-        if fast >= float(valueList[2]):
+        print "Fast: " + str(fast)
+        if float(fast) >= float(valueList[2]):
             print "in if"
             fast = valueList[2]
+            print "new fast: " + str(fast)
         i += 1
     return str(fast)
 

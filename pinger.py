@@ -13,14 +13,14 @@ def run_pinger_server(my_dns_name, my_region, central_host, central_port):
         print "pinger server connecting to ", address
         # removed looping as per walsh's recommendation
         # check loop for connections, try connection, if fail sleep and try again
-        try: # gcp values
-            name = get_my_internal_hostname()
-            zone = get_my_zone()
-            region = region_for_zone(zone)
-        except Exception as e: # aws values
+        try: # aws values
             name = get_my_dns_hostname()
-            zone = get_my_zone()
-            region = region_for_zone(zone)
+            # zone = get_my_zone()
+            # region = region_for_zone(zone)
+        except Exception as e: # gcp values
+            name = get_my_internal_hostname()
+            # zone = get_my_zone()
+            # region = region_for_zone(zone)
         for i in range(0, 3):
             try:
                 theSock.connect(address)
@@ -34,10 +34,10 @@ def run_pinger_server(my_dns_name, my_region, central_host, central_port):
             incoming = theSock.recv(4096)
             print "received from central: " + incoming
             outbound = connectToTarget(incoming)
-            theSock.sendall("RESULT=" + name + "=" + str(outbound) + "=" + region)
+            theSock.sendall("RESULT=" + name + "=" + str(outbound) + "=" + my_region)
     except Exception as e:
         print "connection failed.  Error: " + str(e)
         while True:
-            theSock.sendall("RESULT=" + name + "=" + str(e) + "=" + region)
+            theSock.sendall("RESULT=" + name + "=" + str(e) + "=" + my_region)
 
 

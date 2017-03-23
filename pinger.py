@@ -1,6 +1,5 @@
 # ping servers
 
-import thread
 from urlParser import *
 from aws import *
 from gcp import *
@@ -27,4 +26,8 @@ def run_pinger_server(my_dns_name, my_region, central_host, central_port):
         incoming = theSock.recv(4096)
         print "received from central: " + incoming
         outbound = connectToTarget(incoming)
-        theSock.sendall("RESULT=" + str(outbound))
+        try:
+            name = get_my_internal_hostname()
+        except Exception as e:
+            name = get_my_dns_hostname()
+        theSock.sendall("RESULT=" + name + "=" + str(outbound))

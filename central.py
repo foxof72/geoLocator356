@@ -153,23 +153,38 @@ def handle_http_connection(c):
         pinger_bool = True
         return # return what
     first_line, headers = headers.split("\r\n", 1)
-    print "Request is:", first_line
+    # print "Request is:", first_line
     method, url, version = first_line.split()
     code, mime_type, rttList = handle_request(url)
-    if type(rttList) is float:
-        strRttList = ' '.join(rttList)
+    # print "rttList: " + str(rttList)
+    resultRecieved = False # a true means you are output results, while a false means something else is being sent
+    if rttList[1].startswith("RESULT"):
+        i = 0
+        fancyList = [] # max number of pings is 50
+        while i < len(rttList): # for every recieved result
+            resultRecieved = True
+            cosList = rttList[i].split('=') # list of value to be used for cosmetic purposes
+            fancy = "Name: " + cosList[1] + ".  Result: " + cosList[2] + "ms" # seperates results into name and result
+            # print "i: " + str(i)
+            fancyList.append(str(fancy)) # adds string containing fancy result into list of result to be displayed
+            i += 1
+        print "join"
+        strRttList = '\n\r'.join(fancyList)
     else:
         strRttList = rttList
-    print "mime type: ", mime_type
-    print "body: " + strRttList
-    print "method, url, verision: " + method + ' ' + url + ' ' + version
-    print "Method is", method, "url is", url, "version is", version
     c.sendall("HTTP/1.0 " + code + "\r\n")
     c.sendall("Server: central\r\n")
     c.sendall("Content-type: " + mime_type + "\r\n")
     c.sendall("Content-Length: " + str(len(strRttList)) + "\r\n")
     c.sendall("\r\n")
     c.sendall(strRttList)
+    # if resultRecieved == False: # outputting non-result data
+    #     c.sendall(str(strRttList))
+    # elif resultRecieved == True: # outputting result data
+    #     print "while"
+    #     while i < len(fancyList):
+    #         c.sendall(str(fancyList[i]) + "\n") # print out each fancy item
+    #         i += 1
 
 
 def run_central_coordinator(my_ipaddr, my_zone, my_region, central_host, central_port):

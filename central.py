@@ -138,6 +138,19 @@ def get_mime_type(path):
     else:
         return 'text/html'
 
+# this finds the fastest rtt time
+def fastest(rttList):
+    fast = 100000000000000000000000 # impossibly large number as default value
+    i = 0
+    print "i: " + str(i)
+    while i < len(rttList):
+        valueList = rttList[i].split('=')
+        print "rttValue: " + str(valueList[2])
+        if fast >= float(valueList[2]):
+            print "in if"
+            fast = valueList[2]
+        i += 1
+    return str(fast)
 
 # handle_http_connection reads an HTTP request from socket c, parses and handles
 # the request, then sends the response back to socket c.
@@ -158,11 +171,10 @@ def handle_http_connection(c):
     # print "Request is:", first_line
     method, url, version = first_line.split()
     code, mime_type, rttList = handle_request(url)
-    print "type: " + str(type(rttList))
-    print rttList
-    if rttList[1].startswith("RESULT") or rttList[1].startswith(''):
+    if (rttList[1].startswith("RESULT") or rttList[1].startswith('')) and "</html>" not in rttList:
         i = 0
         fancyList = [] # max number of pings is 50
+        fastestValue = fastest(rttList)
         while i < len(rttList): # for every recieved result
             if rttList[i] != '':
                 cosList = rttList[i].split('=') # list of value to be used for cosmetic purposes
@@ -174,7 +186,7 @@ def handle_http_connection(c):
                 # print "i: " + str(i)
                 fancyList.append(str(fancy)) # adds string containing fancy result into list of result to be displayed
             i += 1
-        print "join"
+        fancyList.append("Fastest RTT: " + str(fastestValue))
         strRttList = '<br>'.join(fancyList)
     else:
         strRttList = rttList

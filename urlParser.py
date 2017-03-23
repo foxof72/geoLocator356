@@ -39,7 +39,10 @@ def parser(request):
     order, target = decoded.split('?')
     trash, host = target.split('=')
     print "host: ", host
-    trash, urlWithPort = host.split('://')
+    if '://' in host:
+        trash, urlWithPort = host.split('://')
+    else:
+        urlWithPort = host
     print "host with port: ", urlWithPort
     try:
         host, port = urlWithPort.split(':')

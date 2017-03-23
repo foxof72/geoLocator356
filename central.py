@@ -68,7 +68,6 @@ def handle_geolocate(name): #return the url and port number for the request
 
     mime_type = get_mime_type(name)
 
-
     count = 0
     while count < len(ping_list):
             #TODO ask walsh about multiple sockets and sending to pinger
@@ -78,19 +77,15 @@ def handle_geolocate(name): #return the url and port number for the request
             count = count + 1
         except:
             ping_list.pop(count)
-
-
-        count = 0
-        result = []
+            print "pop!"
+    count = 0
+    result = []
     while count < len(ping_list):
+        print "werid count loop"
         p = ping_list[count]
         result.append(p.recv(4096))
-        count = count + 1
-
-
-        ','.join(result)
-        return("200 Ok", mime_type, result)
-
+        count += 1
+    return("200 Ok", mime_type, result)
 
 
 # handle_file_request returns a status code, mime-type, and the body of a file
@@ -163,21 +158,21 @@ def handle_http_connection(c):
     # print "Request is:", first_line
     method, url, version = first_line.split()
     code, mime_type, rttList = handle_request(url)
-    # print "rttList: " + str(rttList)
-    resultRecieved = False # a true means you are output results, while a false means something else is being sent
-    if rttList[1].startswith("RESULT"):
+    print "type: " + str(type(rttList))
+    print rttList
+    if rttList[1].startswith("RESULT") or rttList[1].startswith(''):
         i = 0
         fancyList = [] # max number of pings is 50
         while i < len(rttList): # for every recieved result
-            resultRecieved = True
-            cosList = rttList[i].split('=') # list of value to be used for cosmetic purposes
-            if "Errno" not in cosList[2]:
-                # this makes a nice sentence of results
-                fancy = "Name: " + cosList[1] + ".  Result: " + cosList[2] + "ms.  " + "Region: " + cosList[3]
-            elif "Errno" in cosList[2]:
-                fancy = "Warning: Error-Name: " + cosList[1] + ".  Error: " + cosList[2] + "  " + "Region: " + cosList[3]
-            # print "i: " + str(i)
-            fancyList.append(str(fancy)) # adds string containing fancy result into list of result to be displayed
+            if rttList[i] != '':
+                cosList = rttList[i].split('=') # list of value to be used for cosmetic purposes
+                if "Errno" not in cosList[2]:
+                    # this makes a nice sentence of results
+                    fancy = "Name: " + cosList[1] + ".  Result: " + cosList[2] + "ms.  " + "Region: " + cosList[3]
+                elif "Errno" in cosList[2]:
+                    fancy = "Warning: Error-Name: " + cosList[1] + ".  Error: " + cosList[2] + "  " + "Region: " + cosList[3]
+                # print "i: " + str(i)
+                fancyList.append(str(fancy)) # adds string containing fancy result into list of result to be displayed
             i += 1
         print "join"
         strRttList = '<br>'.join(fancyList)

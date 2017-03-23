@@ -1,4 +1,5 @@
 John Williams
+Anthony Green
 Collaboration Log
 
 PyMOTW
@@ -16,3 +17,6 @@ Python documentation
 Read about split
 https://docs.python.org/2/library/stdtypes.html
 
+Office Hours
+3/21-22-23/17
+Discussed the Project with Prof. Walsh

@@ -1,8 +1,6 @@
 # Uses Prof. Walsh's code, modified by Anthony Green and John Williams
 # Author: K. Walsh <kwalsh@cs.holycross.edu>
 # Date: 15 January 2015
-#
-# A simple web server from scratch in Python. Run it like this:
 
 import os  # for os.path.isfile()
 import socket  # for socket stuff
@@ -15,7 +13,7 @@ server_host = ""  # emptystring means "use any available network interface"
 server_port = 8888
 server_root = "form.html"  # file for landing page
 
-# Global variable for list ofo pingers
+# Global variable for list and a flag for pingers
 ping_list = []
 pinger_bool = False
 
@@ -34,8 +32,6 @@ def handle_geolocate(name): #return the url and port number for the request
             count += 1
         except:
             ping_list.pop(count)
-
-
 
     count = 0
     result = []
@@ -120,6 +116,7 @@ def handle_http_connection(c):
     method, url, version = first_line.split()
     code, mime_type, rttList = handle_request(url)
     if (rttList[1].startswith("RESULT") or rttList[1].startswith('')) and "</html>" not in rttList:
+        #This block of code organizes the results of the geolocation
         i = 0
         fancyList = []  # max number of pings is 50
         fastestValue = fastest(rttList)

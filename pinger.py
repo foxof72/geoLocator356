@@ -27,7 +27,6 @@ def run_pinger_server(my_dns_name, my_region, central_host, central_port):
         print "pinger server connected to ", address
         while True:
             incoming = theSock.recv(4096)
-            print "received from central: " + incoming
             outbound = connectToTarget(incoming)
             theSock.sendall("RESULT=" + name + "=" + str(outbound) + "=" + my_region)
     except Exception as e:

@@ -92,9 +92,10 @@ def fastest(rttList):
     fast = 100000000000000000000000.0  # impossibly large number as default value
     i = 0
     while i < len(rttList):
-        valueList = rttList[i].split('=')
-        if float(fast) >= float(valueList[2]):
-            fast = valueList[2]
+        if rttList[i] != '':
+            valueList = rttList[i].split('=')
+            if float(fast) >= float(valueList[2]):
+                fast = valueList[2]
         i += 1
     return str(fast)
 

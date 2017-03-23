@@ -68,22 +68,29 @@ def handle_geolocate(name): #return the url and port number for the request
 
     mime_type = get_mime_type(name)
 
-    count = 0
-    while count < len(ping_list):
-        #TODO ask walsh about multiple sockets and sending to pinger
-        p = ping_list[count]
-        p.sendall(path+':='+host+':='+str(port))
-        count = count + 1
 
     count = 0
-    result = []
+    while count < len(ping_list):
+            #TODO ask walsh about multiple sockets and sending to pinger
+        try:
+            p = ping_list[count]
+            p.sendall(path+':='+host+':='+str(port))
+            count = count + 1
+        except:
+            ping_list.pop(count)
+
+
+        count = 0
+        result = []
     while count < len(ping_list):
         p = ping_list[count]
         result.append(p.recv(4096))
         count = count + 1
 
-    ','.join(result)
-    return("200 Ok", mime_type, result)
+
+        ','.join(result)
+        return("200 Ok", mime_type, result)
+
 
 
 # handle_file_request returns a status code, mime-type, and the body of a file

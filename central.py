@@ -169,7 +169,7 @@ def handle_http_connection(c):
             fancyList.append(str(fancy)) # adds string containing fancy result into list of result to be displayed
             i += 1
         print "join"
-        strRttList = '\n\r'.join(fancyList)
+        strRttList = '<br>'.join(fancyList)
     else:
         strRttList = rttList
     c.sendall("HTTP/1.0 " + code + "\r\n")

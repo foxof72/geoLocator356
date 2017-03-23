@@ -12,7 +12,6 @@ import time
 def connectToTarget(host):
     # TODO: put this whole function in a try except loop, loop this several times
     theSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print "host: " + host
     path, host, port = host.split(':=')
     address = (host, int(port))
     print "connecting to target", address
@@ -26,21 +25,18 @@ def connectToTarget(host):
     endTime = time.time()
     # where incoming is HTTP request from targeted server
     rtt = endTime-startTime
-    print "rtt: " + str(rtt)
-    return rtt
+    return str(rtt)
 
 def parser(request):
-    print "request:", request
     lineList = request.splitlines()
-    print "line: ", lineList[0]
     requestList = lineList[0].split(' ')
     decoded = urllib.unquote(requestList[0])
-    print "decoded", decoded
     order, target = decoded.split('?')
     trash, host = target.split('=')
-    print "host: ", host
-    trash, urlWithPort = host.split('://')
-    print "host with port: ", urlWithPort
+    if '://' in host:
+        trash, urlWithPort = host.split('://')
+    else:
+        urlWithPort = host
     try:
         host, port = urlWithPort.split(':')
     except Exception as e:
@@ -58,13 +54,7 @@ def parser(request):
 
 def main():
     testValue = """
-GET /geolocate?target=https%3A%2F%2Fwww.mountainproject.com HTTP2.0 OK'
-sentAt: """ + str(time.time()) + """
-Server: test
-isRealRequest = false
-Content-Length: 8 bytes
-Date: now
-
+GET /geolocate?target=https%3A%2F%2Fwww.mountainproject.com HTTP/1.0'
 """
     result = parser(testValue)
     print "Returns: ", result

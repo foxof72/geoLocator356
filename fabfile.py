@@ -21,6 +21,7 @@ env.hosts = [
         '104.199.244.68', # gcp, Mordor
         '35.187.207.40', # gcp, serenity
         '104.199.47.244', # gcp, Tatoonie
+        '54.183.219.225', # aws, Hoth
         ]
 env.user = 'jmwill18'
 env.key_filename = '~/.ssh/cloud_sshkey'

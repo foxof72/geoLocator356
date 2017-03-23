@@ -1,7 +1,13 @@
 #!/usr/bin/python
 #
 # Author: K. Walsh <kwalsh@cs.holycross.edu>
-# Date: 9 February 2017
+# Project by John Williams and Anthony Green
+# Date: 9 February 2017 (geolocate)
+# Date: 23 March 2017
+#
+# Everything is working to our knowledge, though sometimes strange, nearly impossible to replicate bugs occur.  These
+# can do everything from cause a massive crash to cause a small delay.  Rerunning the program with no changes resolves
+# them.  We took about 18 hours on this project.
 #
 # Geolocation service top level program. Run it like this:
 #   ./geolocation.py <CentralIP> <Port>
@@ -10,6 +16,7 @@
 # where <CentralIP> is the IP address (or the DNS host name) of the host that
 # will be the central coordinator, and <Port> is the port on which the central
 # coordinator will serve HTTP requests from users.
+# Recent as of 5:33PM, on 3/23/17
 
 import sys            # for sys.argv
 import aws            # for aws.region_for_zone

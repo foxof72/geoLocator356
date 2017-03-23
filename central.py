@@ -171,7 +171,11 @@ def handle_http_connection(c):
         while i < len(rttList): # for every recieved result
             resultRecieved = True
             cosList = rttList[i].split('=') # list of value to be used for cosmetic purposes
-            fancy = "Name: " + cosList[1] + ".  Result: " + cosList[2] + "ms" # seperates results into name and result
+            if "Errno" not in cosList[2]:
+                # this makes a nice sentence of results
+                fancy = "Name: " + cosList[1] + ".  Result: " + cosList[2] + "ms.  " + "Region: " + cosList[3]
+            elif "Errno" in cosList[2]:
+                fancy = "Warning: Error-Name: " + cosList[1] + ".  Error: " + cosList[2] + "  " + "Region: " + cosList[3]
             # print "i: " + str(i)
             fancyList.append(str(fancy)) # adds string containing fancy result into list of result to be displayed
             i += 1
@@ -185,13 +189,6 @@ def handle_http_connection(c):
     c.sendall("Content-Length: " + str(len(strRttList)) + "\r\n")
     c.sendall("\r\n")
     c.sendall(strRttList)
-    # if resultRecieved == False: # outputting non-result data
-    #     c.sendall(str(strRttList))
-    # elif resultRecieved == True: # outputting result data
-    #     print "while"
-    #     while i < len(fancyList):
-    #         c.sendall(str(fancyList[i]) + "\n") # print out each fancy item
-    #         i += 1
 
 
 def run_central_coordinator(my_ipaddr, my_zone, my_region, central_host, central_port):

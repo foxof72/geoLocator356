@@ -156,7 +156,11 @@ def handle_http_connection(c):
     print "Request is:", first_line
     method, url, version = first_line.split()
     code, mime_type, rttList = handle_request(url)
-    strRttList = ' '.join(rttList)
+    if type(rttList) is float:
+        strRttList = ' '.join(rttList)
+    else:
+        strRttList = rttList
+    print "mime type: ", mime_type
     print "body: " + strRttList
     print "method, url, verision: " + method + ' ' + url + ' ' + version
     print "Method is", method, "url is", url, "version is", version
